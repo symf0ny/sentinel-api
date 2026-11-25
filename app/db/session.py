@@ -1,5 +1,7 @@
 from sqlalchemy import create_engine, URL
 from sqlalchemy.orm import sessionmaker
+from collections.abc import Generator
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
 
@@ -18,3 +20,11 @@ engine = create_engine(
 )
 
 SessionLocal = sessionmaker(bind=engine)
+
+def get_db() -> Generator[Session, None, None]:
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
